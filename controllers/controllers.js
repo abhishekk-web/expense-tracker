@@ -10,7 +10,7 @@ exports.postAddData = async(req, res, next)=>{
         console.log(expense);
 
         const data = await Data.create({expense: expense, description: description, category: category});
-        res.status(201).json({alldata: data});
+        res.status(200).json({allData: data});
     }
     catch(err){
         res.status(500).json({
