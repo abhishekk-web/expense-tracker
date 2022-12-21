@@ -1,22 +1,4 @@
 const Data = require("../models/models");
-const User = require("../models/users");
-
-exports.signup = (req, res) => {
-
-    const {name, email, password} = req.body;
-    console.log('email', email)
-    if(name == undefined || name.length === 0
-        || email == null || email.lenth === 0
-        || password == null || password.length === 0    
-    )
-
-    User.create({name, email, password}).then(() => {
-        res.status(201).json({message: 'Successfully create new user'});
-    }).catch(err => {
-        res.status(500).json(err);
-    })
-
-}
 
 exports.postAddData = async(req, res, next)=>{
 
