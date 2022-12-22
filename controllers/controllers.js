@@ -1,5 +1,7 @@
 const Data = require("../models/models");
 
+
+
 exports.postAddData = async(req, res, next)=>{
 
     try{
@@ -8,8 +10,12 @@ exports.postAddData = async(req, res, next)=>{
         const category = req.body.category;
         console.log(expense);
 
+        if(expense == undefined || expense.length === 0) {
+            return res.status(400).json({success: false, message: "parameters missing"})
+        }
+
         const data = await Data.create({expense: expense, description: description, category: category});
-        res.status(200).json({allData: data});
+        return res.status(200).json({allData: data});
     }
     catch(err){
         res.status(500).json({

@@ -31,8 +31,8 @@ exports.signup = async (req, res) => {
         res.status(201).json({message: 'Successfully create new user'})
     })
     }catch(err) {
-        // res.status(500).json(err);
-        console.log("just a error");
+        res.status(500).json(err);
+        // console.log("just a error");
     }
 
 }    
