@@ -1,5 +1,6 @@
 const dataRoutes = require('../controllers/controllers');
 const userController = require('../controllers/user');
+const userauthentication = require('../middleware/auth');
 
 const express = require('express');
 
@@ -9,12 +10,12 @@ router.post('/signup', userController.signup);
 
 router.post('/login', userController.login);
 
-router.post('/data', dataRoutes.postAddData);
+router.post('/data', userauthentication.authenticate , dataRoutes.postAddData);
 
-router.get('/getdata', dataRoutes.getData);
+router.get('/getdata', userauthentication.authenticate , dataRoutes.getData);
 
 router.post('/datas', dataRoutes.datasPost);
 
-router.delete('/deletedata/:id', dataRoutes.deletePost)
+router.delete('/deletedata/:id', userauthentication.authenticate , dataRoutes.deletePost)
 
 module.exports = router;

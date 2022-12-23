@@ -9,6 +9,8 @@ const dataRoute = require('./routes/routes');
 
 
 const cors = require('cors');
+const User = require('./models/users');
+const Expense = require('./models/models')
 
 const app = express();
 
@@ -18,6 +20,8 @@ app.use(bodyParser.json({extended: false}));
 
 app.use(dataRoute);
 
+User.hasMany(Expense);
+Expense.belongsTo(User);
 
 sequelize
 // .sync({force:true})

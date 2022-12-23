@@ -1,5 +1,5 @@
 const Data = require("../models/models");
-
+const jwt = require('jsonwebtoken');
 
 
 exports.postAddData = async(req, res, next)=>{
@@ -14,7 +14,8 @@ exports.postAddData = async(req, res, next)=>{
             return res.status(400).json({success: false, message: "parameters missing"})
         }
 
-        const data = await Data.create({expense: expense, description: description, category: category});
+        const data = await Data.create({expense: expense, description: description, category: category, userId: req.user.id});
+        console.log("the data is ", data);
         return res.status(200).json({allData: data});
     }
     catch(err){
@@ -28,7 +29,7 @@ exports.getData = async (req, res, next)=>{
 
     try {
 
-        const data = await Data.findAll();
+        const data = await req.user.getData();
         res.status(200).json({allData: data});
         console.log(data.allData);
 
@@ -53,8 +54,13 @@ exports.deletePost = async (req, res, next)=>{
     const userId = req.params.id;
     
     console.log("user id is : "+ userId);
-    await Data.destroy({where: {id: userId}});
-    res.sendStatus(200);
+    const rows = await Data.destroy({where: {id: userId, userId: req.user.id}});
+    console.log(rows);
+    if(rows === 0){
+        return res.status(404).json({success: false, message: "Expense doesn't belong to the user"});
+    }
+  
+    return res.status(200).json({success: true, message: "Deleted Successfully"});
    }
    catch(err){
         console.log(err);
