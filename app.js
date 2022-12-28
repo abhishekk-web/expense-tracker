@@ -4,24 +4,35 @@ const express = require('express');
 
 const bodyParser = require('body-parser');
 
+
+const dotenv = require('dotenv')
+
+
 const sequelize = require('./utils/database');
 const dataRoute = require('./routes/routes');
+const purchaseRoute = require("./routes/purchase");
 
 
 const cors = require('cors');
 const User = require('./models/users');
-const Expense = require('./models/models')
+const Expense = require('./models/models');
+const Order = require('./models/orders');
 
 const app = express();
 
 app.use(cors());
+dotenv.config();
 
 app.use(bodyParser.json({extended: false}));
 
 app.use(dataRoute);
+app.use("/purchase",purchaseRoute);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
+
+User.hasMany(Order);
+Order.belongsTo(User);
 
 sequelize
 // .sync({force:true})
