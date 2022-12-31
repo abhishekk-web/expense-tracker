@@ -11,6 +11,7 @@ const dotenv = require('dotenv')
 const sequelize = require('./utils/database');
 const dataRoute = require('./routes/routes');
 const purchaseRoute = require("./routes/purchase");
+const premiumFeatureRoutes = require("./routes/premium");
 
 
 const cors = require('cors');
@@ -27,6 +28,8 @@ app.use(bodyParser.json({extended: false}));
 
 app.use(dataRoute);
 app.use("/purchase",purchaseRoute);
+
+app.use('/premium', premiumFeatureRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);

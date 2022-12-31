@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require("../models/users");
 const purchase = require("../controllers/purchase");
+const premium = require('../controllers/premiumFeature');
 
 exports.authenticate = (req, res, next) => {
     // authorization
