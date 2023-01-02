@@ -39,7 +39,7 @@ exports.signup = async (req, res) => {
 
 }    
 
-exports.generateAccessToken = (id, name, ispremiumuser) => {
+const generateAccessToken = (id, name, ispremiumuser) => {
     console.log(ispremiumuser);
     return jwt.sign({userId : id, name: name, ispremiumuser}, 'secrets')
     
@@ -79,3 +79,4 @@ exports.login = async (req, res) => {
 
 }
 
+exports.generateAccessToken = generateAccessToken;

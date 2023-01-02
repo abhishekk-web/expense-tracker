@@ -18,6 +18,7 @@ const cors = require('cors');
 const User = require('./models/users');
 const Expense = require('./models/models');
 const Order = require('./models/orders');
+const forgotRoute = require("./routes/forgot");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(dataRoute);
 app.use("/purchase",purchaseRoute);
 
 app.use('/premium', premiumFeatureRoutes);
+app.use('/password', forgotRoute);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
