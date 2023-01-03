@@ -4,6 +4,6 @@ const forgotController = require('../controllers/forgot');
 
 const router = express.Router();
 
-router.post("/forgotpassword", forgotController.forgotPassword);
+router.use("/forgotpassword", forgotController.forgotPassword);
 
 module.exports = router;

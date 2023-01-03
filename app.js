@@ -18,6 +18,7 @@ const cors = require('cors');
 const User = require('./models/users');
 const Expense = require('./models/models');
 const Order = require('./models/orders');
+const Forgotpassword = require('./models/forgot');
 const forgotRoute = require("./routes/forgot");
 
 const app = express();
@@ -38,6 +39,9 @@ Expense.belongsTo(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(Forgotpassword);
+Forgotpassword.belongsTo(User);
 
 sequelize
 // .sync({force:true})
