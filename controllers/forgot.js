@@ -53,4 +53,66 @@ exports.forgotPassword = async(req, res) => {
 
 }
 
+exports.resetpassword = (req, res) => {
+    const id = req.params.id;
+    ForgotPassword.findOne({where : {id}}).then(forgotpasswordrequest => {
+        if(forgotpasswordrequest) {
+            forgotpasswordrequest.update({ active: false});
+            res.status(200).send(`<html>
+                <script>
+                    function formsubmitted(e){
+                        e.preventDefault();
+                        console.log('called')
+                    }
+                    </script>
+                    <div style="height: 100%;">
+                    <form style="border: 2px solid black; border-radius: 4px; margin-top: 200px;text-align: center;height: 180px;width: 700px; margin-left: 350px;" action="/password/updatepassword/${id}" method="get">
+                        <br><br><label style="font-weight: bold" for="newpassword">Enter New password</label><br><br>
+                        <input style="width: 300px" name="newpassword" type="password" placeholder="Enter your new password" required></input><br><br>
+                        <button>reset password</button>
+                    </form>
+                    </div>
+            </html>`)
 
+            res.send();
+        }
+    })
+}
+
+
+exports.updatepassword = async(req, res) => {
+    
+    try {
+        const {newpassword } = req.query;
+        const {resetpasswordid} = req.params;
+        ForgotPassword.findOne({where: {id: resetpasswordid}}).then(resetpasswordrequest => {
+            User.findOne({where: {id : resetpasswordrequest.userId}}).then(user => {
+                if(user) {
+                    const saltRounds = 10;
+                    bcrypt.genSalt(saltRounds, function(err, salt) {
+                        if(err){
+                            console.log(err);
+                            throw new Error(err);
+                        }
+                        bcrypt.hash(newpassword, salt, function(err, hash) {
+                            if(err) {
+                                console.log(err);
+                                throw new Error(err);
+                            }
+                            user.update({password: hash}).then(() => {
+                                res.status(201).json({message: 'Successfuly update the new password'})
+                            })
+                        });
+                    });
+                } else {
+                    console.log(err);
+                    return res.status(404).json({error: 'No user Exists', success: false});
+                }
+            })
+        })
+    } catch(err) {
+        console.log(err);
+        return res.status(403).json({err, success: false});
+    }
+
+}
