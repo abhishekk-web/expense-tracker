@@ -1,6 +1,8 @@
 const Data = require("../models/models");
-const jwt = require('jsonwebtoken');
-
+const UserServices = require('../services/userservices');
+const S3Services = require('../services/S3services');
+const { BlobServiceClient } = require('@azure/storage-blob');
+const { v1: uuidv1} = require('uuid');
 
 exports.postAddData = async(req, res, next)=>{
 
@@ -87,5 +89,37 @@ exports.datasPost = async (req, res, next)=>{
         })
 
     }
+
+}
+
+
+
+exports.downloadExpenses = async(req, res) => {
+
+    try{
+        if(!req.user.ispremiumuser){
+            return res.status(401).json({ success: false, message: 'User is not a premium User'})
+        }
+    
+
+    try {
+        const expenses = await UserServices.getData(req);
+        console.log(expenses);
+        const stringifiedExpenses = JSON.stringify(expenses);
+
+        const userId = req.user.id;
+
+        const filename = `Expenses${userId}/${new Date()}.txt`;
+        const fileURL = await S3Services.uploadToS3(stringifiedExpenses, filename);
+        res.status(200).json({fileURL, success: true})
+    }
+    catch(err) {
+        console.log(err);
+        res.status(500).json({fileURL: '', success: false, err: err})
+    }
+}
+catch(err) {
+    console.log(err);
+}
 
 }

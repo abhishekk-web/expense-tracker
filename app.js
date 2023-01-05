@@ -33,6 +33,7 @@ app.use("/purchase",purchaseRoute);
 
 app.use('/premium', premiumFeatureRoutes);
 app.use('/password', forgotRoute);
+app.use('/user', dataRoute);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
