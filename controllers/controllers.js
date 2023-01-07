@@ -4,6 +4,8 @@ const S3Services = require('../services/S3services');
 const { BlobServiceClient } = require('@azure/storage-blob');
 const { v1: uuidv1} = require('uuid');
 
+const ITEMS_PER_PAGE = 2;
+
 exports.postAddData = async(req, res, next)=>{
 
     try{
@@ -29,17 +31,48 @@ exports.postAddData = async(req, res, next)=>{
 
 exports.getData = async (req, res, next)=>{
 
-    try {
+    try{
 
-        const data = await req.user.getData();
-        res.status(200).json({allData: data});
-        console.log(data.allData);
+        const page = +req.query.page || 1;
+        var totalItems;
+
+        const totals = await Data.count();
+            totalItems = totals;
+            return Data.findAll({
+                offset: (page - 1) * ITEMS_PER_PAGE,
+                limit: ITEMS_PER_PAGE
+            })
+        
+
+        // const data = await req.user.getData();
+        // const data = await res.status(200).json({
+        //     allData: data,
+        //     currentPage: page,
+        //     hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        //     nextPage: +page + 1,
+        //     hasPreviousPage: page > 1,
+        //     PreviousPage: +page - 1,
+        //     lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+        // });
+        .then(data => {
+            res.json({
+              allData: data,
+              currentPage: page,
+              hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+              nextPage: +page + 1,
+              hasPreviousPage: page > 1,
+              PreviousPage: +page - 1,
+              lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+              });
+        console.log(data);
+        })
 
     }
-    catch(err){
-        res.status(500).json({
-            error: err
-        })
+    catch(err)  {
+        // res.status(500).json({
+        //     error: err
+        // })
+        console.log(err);
     }
 
 
