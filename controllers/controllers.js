@@ -35,25 +35,17 @@ exports.getData = async (req, res, next)=>{
 
         const page = +req.query.page || 1;
         var totalItems;
-
-        const totals = await Data.count();
+        
+        const totals = await Data.count({where: {userId: req.user.id}}).then((totals) => {
             totalItems = totals;
             return Data.findAll({
+                
+                where:{userId: req.user.id}, 
                 offset: (page - 1) * ITEMS_PER_PAGE,
                 limit: ITEMS_PER_PAGE
             })
-        
-
-        // const data = await req.user.getData();
-        // const data = await res.status(200).json({
-        //     allData: data,
-        //     currentPage: page,
-        //     hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-        //     nextPage: +page + 1,
-        //     hasPreviousPage: page > 1,
-        //     PreviousPage: +page - 1,
-        //     lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
-        // });
+        })
+            
         .then(data => {
             res.json({
               allData: data,
@@ -69,9 +61,9 @@ exports.getData = async (req, res, next)=>{
 
     }
     catch(err)  {
-        // res.status(500).json({
-        //     error: err
-        // })
+        res.status(500).json({
+            error: err
+        })
         console.log(err);
     }
 
