@@ -1,4 +1,5 @@
 const path = require('path');
+const helmet = require('helmet');
 
 const express = require('express');
 
@@ -22,6 +23,8 @@ const Forgotpassword = require('./models/forgot');
 const forgotRoute = require("./routes/forgot");
 
 const app = express();
+
+app.use(helmet());
 
 app.use(cors());
 dotenv.config();

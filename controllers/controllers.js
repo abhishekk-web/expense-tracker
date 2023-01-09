@@ -64,7 +64,7 @@ exports.getData = async (req, res, next)=>{
         res.status(500).json({
             error: err
         })
-        console.log(err);
+        
     }
 
 
